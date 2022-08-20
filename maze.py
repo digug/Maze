@@ -2,6 +2,7 @@ import time
 import turtle
 import sys
 import keyboard
+from collections import OrderedDict
 
 
 class Wall(turtle.Turtle):
@@ -13,11 +14,20 @@ class Wall(turtle.Turtle):
         self.speed(0)
 
 
-class Visited(turtle.Turtle):
+class Path(turtle.Turtle):
     def __init__(self):
         turtle.Turtle.__init__(self)
         self.shape("square")
         self.color("yellow")
+        self.penup()
+        self.speed(0)
+
+
+class Visited(turtle.Turtle):
+    def __init__(self):
+        turtle.Turtle.__init__(self)
+        self.shape("square")
+        self.color("orange")
         self.penup()
         self.speed(0)
 
@@ -144,12 +154,11 @@ def dijkstra():
         unvisited.pop(curr_cell)
     fwd_path = {}
     goal = (29, 24)
-    # print(rev_path)
-    # print("-" * 20)
     while goal != (1, 1):
         fwd_path[rev_path[goal]] = goal
         goal = rev_path[goal]
-    return fwd_path, visited[(29, 24)]
+    fwd_path = OrderedDict(reversed(list(fwd_path.items())))
+    return rev_path, fwd_path, visited[(29, 24)]
 
 
 class User(turtle.Turtle):
@@ -210,9 +219,24 @@ def build_maze(maze):
             elif ch == "L":
                 lhr.goto(x_cord, y_cord)
 
-            elif ch == "v":
-                visited.goto(x_cord, y_cord)
-                visited.stamp()
+
+def update_path(maze, path, mapping):
+    for y, x in mapping:
+        if maze[y][x] == "x":
+            continue
+        else:
+            x_cord = -348 + (x * 24)
+            y_cord = 348 - (y * 24)
+            visited.goto(x_cord, y_cord)
+            visited.stamp()
+            time.sleep(0.1)
+
+    for y, x in path:
+        x_cord = -348 + (x * 24)
+        y_cord = 348 - (y * 24)
+        solution.goto(x_cord, y_cord)
+        solution.stamp()
+        time.sleep(0.1)
 
 
 def end_program():
@@ -261,7 +285,7 @@ visited = Visited()
 lhr = Lefthandrule()
 finish = []
 walls = []
-path = []
+solution = Path()
 
 
 win = turtle.Screen()
@@ -269,17 +293,19 @@ win.bgcolor("black")
 win.title("Maze Game")
 win.setup(800, 800)
 
-path, cost = dijkstra()
-for x, y in path:
-    if maze[x][y] == " ":
-        maze[x][y] = "v"
 build_maze(maze)
+rev, path, cost = dijkstra()
+# for x, y in path:
+#     maze[x][y] = "v"
+
+
 turtle.listen()
 turtle.onkey(user.usr_up, "Up")
 turtle.onkey(user.usr_down, "Down")
 turtle.onkey(user.usr_left, "Left")
 turtle.onkey(user.usr_right, "Right")
 
+update_path(maze, path, rev)
 
 # def lhr_solver():
 #     not_goal = True
