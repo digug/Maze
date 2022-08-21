@@ -1,8 +1,8 @@
 import time
 import turtle
 import sys
-import keyboard
-from collections import OrderedDict
+import dijkstra
+from tkinter import *
 
 
 class Wall(turtle.Turtle):
@@ -117,48 +117,6 @@ class Lefthandrule(turtle.Turtle):
                 self.left(90)
                 self.forward(24)
         return True
-
-
-def dijkstra():
-    unvisited = {}
-    for y in range(len(maze[0])):
-        for x in range(len(maze)):
-            unvisited[(x, y)] = float("inf")
-            unvisited[(1, 1)] = 0
-    visited = {}
-    rev_path = {}
-    while unvisited:
-        curr_cell = min(unvisited, key=unvisited.get)
-        x, y = curr_cell[0], curr_cell[1]
-        visited[curr_cell] = unvisited[curr_cell]
-
-        # goal reached
-        if curr_cell == (29, 24):
-            break
-        for direction in "NESW":
-            if maze[x][y] != "x":
-                if direction == "N":
-                    child_cell = (x - 1, y)
-                elif direction == "E":
-                    child_cell = (x, y + 1)
-                elif direction == "S":
-                    child_cell = (x + 1, y)
-                elif direction == "W":
-                    child_cell = (x, y - 1)
-                if child_cell in visited:
-                    continue
-                temp_dist = unvisited[curr_cell] + 1
-                if temp_dist < unvisited[child_cell]:
-                    unvisited[child_cell] = temp_dist
-                    rev_path[child_cell] = curr_cell
-        unvisited.pop(curr_cell)
-    fwd_path = {}
-    goal = (29, 24)
-    while goal != (1, 1):
-        fwd_path[rev_path[goal]] = goal
-        goal = rev_path[goal]
-    fwd_path = OrderedDict(reversed(list(fwd_path.items())))
-    return rev_path, fwd_path, visited[(29, 24)]
 
 
 class User(turtle.Turtle):
@@ -291,12 +249,25 @@ solution = Path()
 win = turtle.Screen()
 win.bgcolor("black")
 win.title("Maze Game")
-win.setup(800, 800)
+win.setup(800, 900)
 
 build_maze(maze)
-rev, path, cost = dijkstra()
-# for x, y in path:
-#     maze[x][y] = "v"
+
+# button = turtle.Turtle()
+# button.hideturtle()
+# button.shape("circle")
+# button.fillcolor("red")
+# button.penup()
+# button.goto(400, 850)
+# button.write("Click me!", align="center", font=("Arial", 12, "bold"))
+# button.sety(150 + 20 + 12)
+# button.showturtle()
+
+# canvas = win.getcanvas()
+# button = Button(canvas.master, text="Exit")
+
+# button.pack()
+# button.place(x=300, y=100)  # place the button anywhere on the screen
 
 
 turtle.listen()
@@ -305,7 +276,8 @@ turtle.onkey(user.usr_down, "Down")
 turtle.onkey(user.usr_left, "Left")
 turtle.onkey(user.usr_right, "Right")
 
-update_path(maze, path, rev)
+rev, path, cost = dijkstra.dijkstra(maze)
+dijkstra.update_path(maze, path, rev, visited, solution)
 
 # def lhr_solver():
 #     not_goal = True
