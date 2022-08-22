@@ -1,7 +1,8 @@
 import time
 import turtle
 import sys
-import dijkstra
+from LHR import Lefthandrule
+from dijkstra import *
 from tkinter import *
 
 
@@ -41,82 +42,82 @@ class Goal(turtle.Turtle):
         self.speed(0)
 
 
-class Lefthandrule(turtle.Turtle):
-    def __init__(self):
-        turtle.Turtle.__init__(self)
-        self.shape("turtle")
-        self.color("red")
-        self.setheading(270)
-        self.penup()
-        self.speed(0)
+# class Lefthandrule(turtle.Turtle):
+#     def __init__(self):
+#         turtle.Turtle.__init__(self)
+#         self.shape("turtle")
+#         self.color("red")
+#         self.setheading(270)
+#         self.penup()
+#         self.speed(0)
 
-    def try_up(self, not_goal):
-        x_cor = round(self.xcor(), 0)
-        y_cor = round(self.ycor(), 0)
-        if [x_cor, self.ycor()] in finish:
-            return False
-            # end_program()
-        if self.heading() == 90:
-            if [x_cor - 24, y_cor] in walls:
-                if [x_cor, y_cor + 24] not in walls:
-                    self.forward(24)
-                else:
-                    self.right(90)
-            else:
-                self.left(90)
-                self.forward(24)
-        return True
+#     def try_up(self, not_goal):
+#         x_cor = round(self.xcor(), 0)
+#         y_cor = round(self.ycor(), 0)
+#         if [x_cor, self.ycor()] in finish:
+#             return False
+#             # end_program()
+#         if self.heading() == 90:
+#             if [x_cor - 24, y_cor] in walls:
+#                 if [x_cor, y_cor + 24] not in walls:
+#                     self.forward(24)
+#                 else:
+#                     self.right(90)
+#             else:
+#                 self.left(90)
+#                 self.forward(24)
+#         return True
 
-    def try_down(self, not_goal):
-        x_cor = round(self.xcor(), 0)
-        y_cor = round(self.ycor(), 0)
-        if [x_cor, y_cor] in finish:
-            return False
-            # end_program()
-        if self.heading() == 270:
-            if [x_cor + 24, y_cor] in walls:
-                if [x_cor, y_cor - 24] not in walls:
-                    self.forward(24)
-                else:
-                    self.right(90)
-            else:
-                self.left(90)
-                self.forward(24)
-        return True
+#     def try_down(self, not_goal):
+#         x_cor = round(self.xcor(), 0)
+#         y_cor = round(self.ycor(), 0)
+#         if [x_cor, y_cor] in finish:
+#             return False
+#             # end_program()
+#         if self.heading() == 270:
+#             if [x_cor + 24, y_cor] in walls:
+#                 if [x_cor, y_cor - 24] not in walls:
+#                     self.forward(24)
+#                 else:
+#                     self.right(90)
+#             else:
+#                 self.left(90)
+#                 self.forward(24)
+#         return True
 
-    def try_left(self, not_goal):
-        x_cor = round(self.xcor(), 0)
-        y_cor = round(self.ycor(), 0)
-        if [self.xcor(), self.ycor()] in finish:
-            return False
-            # end_program()
-        if self.heading() == 0:
-            if [x_cor, y_cor + 24] in walls:
-                if [x_cor + 24, y_cor] not in walls:
-                    self.forward(24)
-                else:
-                    self.right(90)
-            else:
-                self.left(90)
-                self.forward(24)
-        return True
+#     def try_left(self, not_goal):
+#         x_cor = round(self.xcor(), 0)
+#         y_cor = round(self.ycor(), 0)
+#         if [self.xcor(), self.ycor()] in finish:
+#             return False
+#             # end_program()
+#         if self.heading() == 0:
+#             if [x_cor, y_cor + 24] in walls:
+#                 if [x_cor + 24, y_cor] not in walls:
+#                     self.forward(24)
+#                 else:
+#                     self.right(90)
+#             else:
+#                 self.left(90)
+#                 self.forward(24)
+#         return True
 
-    def try_right(self, not_goal):
-        x_cor = round(self.xcor(), 0)
-        y_cor = round(self.ycor(), 0)
-        if [self.xcor(), self.ycor()] in finish:
-            return False
-            # end_program()
-        if self.heading() == 180:
-            if [x_cor, y_cor - 24] in walls:
-                if [x_cor - 24, y_cor] not in walls:
-                    self.forward(24)
-                else:
-                    self.right(90)
-            else:
-                self.left(90)
-                self.forward(24)
-        return True
+#     def try_right(self, not_goal):
+#         x_cor = round(self.xcor(), 0)
+#         y_cor = round(self.ycor(), 0)
+#         if [self.xcor(), self.ycor()] in finish:
+#             return False
+#             # end_program()
+#         if self.heading() == 180:
+#             if [x_cor, y_cor - 24] in walls:
+#                 if [x_cor - 24, y_cor] not in walls:
+#                     self.forward(24)
+#                 else:
+#                     self.right(90)
+#             else:
+#                 self.left(90)
+#                 self.forward(24)
+#         return True
 
 
 class User(turtle.Turtle):
@@ -178,23 +179,39 @@ def build_maze(maze):
                 lhr.goto(x_cord, y_cord)
 
 
-def update_path(maze, path, mapping):
-    for y, x in mapping:
-        if maze[y][x] == "x":
-            continue
-        else:
-            x_cord = -348 + (x * 24)
-            y_cord = 348 - (y * 24)
-            visited.goto(x_cord, y_cord)
-            visited.stamp()
-            time.sleep(0.1)
+# def update_path(maze, path, mapping):
+#     for y, x in mapping:
+#         if maze[y][x] == "x":
+#             continue
+#         else:
+#             x_cord = -348 + (x * 24)
+#             y_cord = 348 - (y * 24)
+#             visited.goto(x_cord, y_cord)
+#             visited.stamp()
+#             time.sleep(0.1)
 
-    for y, x in path:
-        x_cord = -348 + (x * 24)
-        y_cord = 348 - (y * 24)
-        solution.goto(x_cord, y_cord)
-        solution.stamp()
-        time.sleep(0.1)
+#     for y, x in path:
+#         x_cord = -348 + (x * 24)
+#         y_cord = 348 - (y * 24)
+#         solution.goto(x_cord, y_cord)
+#         solution.stamp()
+#         time.sleep(0.1)
+
+
+def lhr_solver():
+    not_goal = True
+    goal_found = True
+    while True:
+        while goal_found:
+            if not_goal:
+                not_goal = lhr.try_right(not_goal)
+                not_goal = lhr.try_down(not_goal)
+                not_goal = lhr.try_left(not_goal)
+                not_goal = lhr.try_up(not_goal)
+            else:
+                print("Left Hand Rule has reached goal")
+                goal_found = False
+        win.update()
 
 
 def end_program():
@@ -240,7 +257,6 @@ wall = Wall()
 goal = Goal()
 user = User()
 visited = Visited()
-lhr = Lefthandrule()
 finish = []
 walls = []
 solution = Path()
@@ -251,6 +267,7 @@ win.bgcolor("black")
 win.title("Maze Game")
 win.setup(800, 900)
 
+lhr = Lefthandrule(finish, walls)
 build_maze(maze)
 
 # button = turtle.Turtle()
@@ -263,11 +280,10 @@ build_maze(maze)
 # button.sety(150 + 20 + 12)
 # button.showturtle()
 
-# canvas = win.getcanvas()
-# button = Button(canvas.master, text="Exit")
-
-# button.pack()
-# button.place(x=300, y=100)  # place the button anywhere on the screen
+canvas = win.getcanvas()
+button = Button(canvas.master, text="Exit")
+button.pack()
+button.place(x=400, y=850)  # place the button anywhere on the screen
 
 
 turtle.listen()
@@ -276,8 +292,8 @@ turtle.onkey(user.usr_down, "Down")
 turtle.onkey(user.usr_left, "Left")
 turtle.onkey(user.usr_right, "Right")
 
-rev, path, cost = dijkstra.dijkstra(maze)
-dijkstra.update_path(maze, path, rev, visited, solution)
+# rev, path, cost = dijkstra(maze)
+# update_path(maze, path, rev, visited, solution)
 
 # def lhr_solver():
 #     not_goal = True
@@ -296,7 +312,7 @@ dijkstra.update_path(maze, path, rev, visited, solution)
 #             return
 #         win.update()
 
-# lhr_solver()
+lhr_solver()
 
 
 while True:
