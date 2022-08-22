@@ -4,6 +4,7 @@ import sys
 from LHR import Lefthandrule
 from dijkstra import *
 from tkinter import *
+from util import *
 
 
 class Wall(turtle.Turtle):
@@ -40,84 +41,6 @@ class Goal(turtle.Turtle):
         self.color("green")
         self.penup()
         self.speed(0)
-
-
-# class Lefthandrule(turtle.Turtle):
-#     def __init__(self):
-#         turtle.Turtle.__init__(self)
-#         self.shape("turtle")
-#         self.color("red")
-#         self.setheading(270)
-#         self.penup()
-#         self.speed(0)
-
-#     def try_up(self, not_goal):
-#         x_cor = round(self.xcor(), 0)
-#         y_cor = round(self.ycor(), 0)
-#         if [x_cor, self.ycor()] in finish:
-#             return False
-#             # end_program()
-#         if self.heading() == 90:
-#             if [x_cor - 24, y_cor] in walls:
-#                 if [x_cor, y_cor + 24] not in walls:
-#                     self.forward(24)
-#                 else:
-#                     self.right(90)
-#             else:
-#                 self.left(90)
-#                 self.forward(24)
-#         return True
-
-#     def try_down(self, not_goal):
-#         x_cor = round(self.xcor(), 0)
-#         y_cor = round(self.ycor(), 0)
-#         if [x_cor, y_cor] in finish:
-#             return False
-#             # end_program()
-#         if self.heading() == 270:
-#             if [x_cor + 24, y_cor] in walls:
-#                 if [x_cor, y_cor - 24] not in walls:
-#                     self.forward(24)
-#                 else:
-#                     self.right(90)
-#             else:
-#                 self.left(90)
-#                 self.forward(24)
-#         return True
-
-#     def try_left(self, not_goal):
-#         x_cor = round(self.xcor(), 0)
-#         y_cor = round(self.ycor(), 0)
-#         if [self.xcor(), self.ycor()] in finish:
-#             return False
-#             # end_program()
-#         if self.heading() == 0:
-#             if [x_cor, y_cor + 24] in walls:
-#                 if [x_cor + 24, y_cor] not in walls:
-#                     self.forward(24)
-#                 else:
-#                     self.right(90)
-#             else:
-#                 self.left(90)
-#                 self.forward(24)
-#         return True
-
-#     def try_right(self, not_goal):
-#         x_cor = round(self.xcor(), 0)
-#         y_cor = round(self.ycor(), 0)
-#         if [self.xcor(), self.ycor()] in finish:
-#             return False
-#             # end_program()
-#         if self.heading() == 180:
-#             if [x_cor, y_cor - 24] in walls:
-#                 if [x_cor - 24, y_cor] not in walls:
-#                     self.forward(24)
-#                 else:
-#                     self.right(90)
-#             else:
-#                 self.left(90)
-#                 self.forward(24)
-#         return True
 
 
 class User(turtle.Turtle):
@@ -168,9 +91,9 @@ def build_maze(maze):
 
             elif ch == "O":
                 goal.goto(x_cord, y_cord)
-                goal.stamp()
                 finish.append([x_cord, y_cord])
                 walls.append([x_cord, y_cord - 24])
+                goal.stamp()
 
             elif ch == "U":
                 user.goto(x_cord, y_cord)
@@ -179,44 +102,12 @@ def build_maze(maze):
                 lhr.goto(x_cord, y_cord)
 
 
-# def update_path(maze, path, mapping):
-#     for y, x in mapping:
-#         if maze[y][x] == "x":
-#             continue
-#         else:
-#             x_cord = -348 + (x * 24)
-#             y_cord = 348 - (y * 24)
-#             visited.goto(x_cord, y_cord)
-#             visited.stamp()
-#             time.sleep(0.1)
-
-#     for y, x in path:
-#         x_cord = -348 + (x * 24)
-#         y_cord = 348 - (y * 24)
-#         solution.goto(x_cord, y_cord)
-#         solution.stamp()
-#         time.sleep(0.1)
-
-
-def lhr_solver():
-    not_goal = True
-    goal_found = True
-    while True:
-        while goal_found:
-            if not_goal:
-                not_goal = lhr.try_right(not_goal)
-                not_goal = lhr.try_down(not_goal)
-                not_goal = lhr.try_left(not_goal)
-                not_goal = lhr.try_up(not_goal)
-            else:
-                print("Left Hand Rule has reached goal")
-                goal_found = False
-        win.update()
-
-
-def end_program():
-    win.exitonclick()
-    sys.exit()
+def run_dijkstra(maze):
+    visited = Visited()
+    solution = Path()
+    rev, path, cost = dijkstra(maze)
+    update_path(maze, path, rev, visited, solution)
+    build_maze(maze)
 
 
 # 30x30 maze
@@ -256,34 +147,25 @@ maze = [
 wall = Wall()
 goal = Goal()
 user = User()
-visited = Visited()
 finish = []
 walls = []
-solution = Path()
+need_lhr = False
+lhr = Lefthandrule(finish, walls)
 
 
 win = turtle.Screen()
 win.bgcolor("black")
 win.title("Maze Game")
 win.setup(800, 900)
-
-lhr = Lefthandrule(finish, walls)
-build_maze(maze)
-
-# button = turtle.Turtle()
-# button.hideturtle()
-# button.shape("circle")
-# button.fillcolor("red")
-# button.penup()
-# button.goto(400, 850)
-# button.write("Click me!", align="center", font=("Arial", 12, "bold"))
-# button.sety(150 + 20 + 12)
-# button.showturtle()
-
 canvas = win.getcanvas()
-button = Button(canvas.master, text="Exit")
-button.pack()
-button.place(x=400, y=850)  # place the button anywhere on the screen
+
+button_dijkstra = Button(canvas.master, text="Dijkstra", font="ariel", command=lambda: run_dijkstra(maze))
+button_dijkstra.place(x=40, y=850)
+button_lhr = Button(canvas.master, text="Left Hand Rule", font="ariel", command=lambda: lhr_solver(lhr, win))
+button_lhr.place(x=120, y=850)
+
+
+build_maze(maze)
 
 
 turtle.listen()
@@ -291,28 +173,6 @@ turtle.onkey(user.usr_up, "Up")
 turtle.onkey(user.usr_down, "Down")
 turtle.onkey(user.usr_left, "Left")
 turtle.onkey(user.usr_right, "Right")
-
-# rev, path, cost = dijkstra(maze)
-# update_path(maze, path, rev, visited, solution)
-
-# def lhr_solver():
-#     not_goal = True
-#     goal_found = True
-#     while True:
-#         while goal_found:
-#             if not_goal:
-#                 not_goal = lhr.try_right(not_goal)
-#                 not_goal = lhr.try_down(not_goal)
-#                 not_goal = lhr.try_left(not_goal)
-#                 not_goal = lhr.try_up(not_goal)
-#             else:
-#                 print("Left Hand Rule has reached goal")
-#                 goal_found = False
-#         if keyboard.is_pressed("r"):
-#             return
-#         win.update()
-
-lhr_solver()
 
 
 while True:
