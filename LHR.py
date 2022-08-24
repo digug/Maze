@@ -12,6 +12,7 @@ class Lefthandrule(turtle.Turtle):
         self.speed(0)
         self.finish = finish
         self.walls = walls
+        self.hideturtle()
 
     def try_up(self, not_goal):
         x_cor = round(self.xcor(), 0)
