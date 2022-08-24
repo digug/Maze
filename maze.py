@@ -1,3 +1,4 @@
+from asyncore import write
 import turtle
 from LHR import Lefthandrule
 from dijkstra import *
@@ -32,6 +33,7 @@ class Path(turtle.Turtle):
         self.color("yellow")
         self.penup()
         self.speed(0)
+        self.hideturtle()
 
 
 """
@@ -102,7 +104,7 @@ class User(turtle.Turtle):
                 print("Player has reached goal")
 
 
-# Initializes and builds maze based on a string file with the indivual letter representing different objects
+# Initializes and builds maze based on a string file with the individual letter representing different objects
 def build_maze(maze):
     for y in range(len(maze[0])):
         for x in range(len(maze)):
@@ -134,11 +136,12 @@ def build_maze(maze):
 
 
 # Runner method for dijkstra algo
-def run_dijkstra(maze):
+def run_dijkstra(maze, turt):
     visited = Visited()
     solution = Path()
     rev, path, cost = dijkstra(maze)
     update_path(maze, path, rev, visited, solution)
+    write_cost(cost, turt)
     build_maze(maze)
 
 
@@ -177,6 +180,10 @@ maze = [
 ]
 
 # initialize classes and vars
+writer = turtle.Turtle()
+writer.color("yellow")
+writer.hideturtle()
+
 wall = Wall()
 goal = Goal()
 user = User()
@@ -193,7 +200,7 @@ win.setup(800, 900)
 canvas = win.getcanvas()
 
 # Buttons to run dijkstra and lhr
-button_dijkstra = Button(canvas.master, text="Dijkstra", font="ariel", command=lambda: run_dijkstra(maze))
+button_dijkstra = Button(canvas.master, text="Dijkstra", font="ariel", command=lambda: run_dijkstra(maze, writer))
 button_dijkstra.place(x=40, y=850)
 button_lhr = Button(canvas.master, text="Left Hand Rule", font="ariel", command=lambda: lhr_solver(lhr, win))
 button_lhr.place(x=120, y=850)
