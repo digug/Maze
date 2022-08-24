@@ -3,6 +3,7 @@ from dijkstra import *
 
 
 def lhr_solver(lhr, win):
+    lhr.showturtle()
     not_goal = True
     goal_found = True
     while True:
@@ -16,6 +17,12 @@ def lhr_solver(lhr, win):
                 print("Left Hand Rule has reached goal")
                 goal_found = False
         win.update()
+
+
+def write_cost(cost, writer):
+    writer.penup()
+    writer.goto(-24 * 15, 25 * 15)
+    writer.write("Shortest path cost: " + str(cost), font=("ariel", 20, "bold"), align="left")
 
 
 def end_program(win):
