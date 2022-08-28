@@ -4,6 +4,7 @@ from LHR import Lefthandrule
 from dijkstra import *
 from tkinter import *
 from util import *
+from maze_gen import maze_gen
 
 """
 Wall object of shape square and color white
@@ -128,56 +129,58 @@ def build_maze(maze):
 
             # 'U' stands for user
             elif ch == "U":
+
                 user.goto(x_cord, y_cord)
 
-            # 'L' stands for the left hand rule pointer
-            elif ch == "L":
+                # # 'L' stands for the left hand rule pointer
+                # elif ch == "L":
                 lhr.goto(x_cord, y_cord)
 
 
 # Runner method for dijkstra algo
-def run_dijkstra(maze, turt):
+def run_dijkstra(maze, beginning, end, turt):
     visited = Visited()
     solution = Path()
-    rev, path, cost = dijkstra(maze)
+    rev, path, cost = dijkstra(maze, beginning, end)
     update_path(maze, path, rev, visited, solution)
     write_cost(cost, turt)
     build_maze(maze)
 
 
 # 30x30 maze
-maze = [
-    list("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
-    list("xULx         x               x"),
-    list("x  x  xxxxx  x  xxxxx   x    x"),
-    list("x  x  x   x  x  x   x   x    x"),
-    list("x  xxxx   x  x  x   x   x    x"),
-    list("x         x  x  x   x   x x  x"),
-    list("x   xxxxxxx  x  x   x     x xx"),
-    list("x               x   x        x"),
-    list("x   x  xxxxx  xxx   xx       x"),
-    list("x   x  x   x  x      xx   x  x"),
-    list("x   x  x   x  x           x  x"),
-    list("xxxxx  x   x  xxxx    x   x  x"),
-    list("x      x              x   x  x"),
-    list("x   xxxx   x  xxxxxxx x      x"),
-    list("x          x  x  x       x   x"),
-    list("x   xxxxxxxx  x  x  xxx  x   x"),
-    list("x   x         x  x  x    xxxxx"),
-    list("x   x  xxxxxxxx  xxxx   xx   x"),
-    list("x  xx         x         x    x"),
-    list("x  x    xxx   x         x    x"),
-    list("x  x    x          xxxxxxxx  x"),
-    list("xxxxxxxxxxxxxxx   xx      x  x"),
-    list("x             x   x    x     x"),
-    list("x             x   x    x  x  x"),
-    list("x   xxxxx  x xx   x    x  x  x"),
-    list("x   x   x  x  x   x    x  x  x"),
-    list("x   x      x  x   x    x  x  x"),
-    list("x   xxxxxxxxxxx   xxx  x  x  x"),
-    list("x                      x  x  x"),
-    list("xxxxxxxxxxxxxxxxxxxxxxxxOxxxxx"),
-]
+maze, beginning, end = maze_gen(30, 30)
+# maze = [
+#     list("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+#     list("xULx         x               x"),
+#     list("x  x  xxxxx  x  xxxxx   x    x"),
+#     list("x  x  x   x  x  x   x   x    x"),
+#     list("x  xxxx   x  x  x   x   x    x"),
+#     list("x         x  x  x   x   x x  x"),
+#     list("x   xxxxxxx  x  x   x     x xx"),
+#     list("x               x   x        x"),
+#     list("x   x  xxxxx  xxx   xx       x"),
+#     list("x   x  x   x  x      xx   x  x"),
+#     list("x   x  x   x  x           x  x"),
+#     list("xxxxx  x   x  xxxx    x   x  x"),
+#     list("x      x              x   x  x"),
+#     list("x   xxxx   x  xxxxxxx x      x"),
+#     list("x          x  x  x       x   x"),
+#     list("x   xxxxxxxx  x  x  xxx  x   x"),
+#     list("x   x         x  x  x    xxxxx"),
+#     list("x   x  xxxxxxxx  xxxx   xx   x"),
+#     list("x  xx         x         x    x"),
+#     list("x  x    xxx   x         x    x"),
+#     list("x  x    x          xxxxxxxx  x"),
+#     list("xxxxxxxxxxxxxxx   xx      x  x"),
+#     list("x             x   x    x     x"),
+#     list("x             x   x    x  x  x"),
+#     list("x   xxxxx  x xx   x    x  x  x"),
+#     list("x   x   x  x  x   x    x  x  x"),
+#     list("x   x      x  x   x    x  x  x"),
+#     list("x   xxxxxxxxxxx   xxx  x  x  x"),
+#     list("x                      x  x  x"),
+#     list("xxxxxxxxxxxxxxxxxxxxxxxxOxxxxx"),
+# ]
 
 # initialize classes and vars
 writer = turtle.Turtle()
@@ -200,7 +203,7 @@ win.setup(800, 900)
 canvas = win.getcanvas()
 
 # Buttons to run dijkstra and lhr
-button_dijkstra = Button(canvas.master, text="Dijkstra", font="ariel", command=lambda: run_dijkstra(maze, writer))
+button_dijkstra = Button(canvas.master, text="Dijkstra", font="ariel", command=lambda: run_dijkstra(maze, beginning, end, writer))
 button_dijkstra.place(x=40, y=850)
 button_lhr = Button(canvas.master, text="Left Hand Rule", font="ariel", command=lambda: lhr_solver(lhr, win))
 button_lhr.place(x=120, y=850)
