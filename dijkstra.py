@@ -44,16 +44,15 @@ def dijkstra(maze, beginning, end):
     return rev_path, fwd_path, cost
 
 
-def update_path(maze, path, mapping, visited, solution):
+def update_path(maze, path, mapping, visited, solution, end):
     for y, x in mapping:
-        if maze[y][x] == "x":
+        if maze[y][x] == "x" or (y, x) == end:
             continue
         else:
             x_cord = -348 + (x * 24)
             y_cord = 348 - (y * 24)
             visited.goto(x_cord, y_cord)
             visited.stamp()
-            time.sleep(0.1)
 
     for y, x in path:
         x_cord = -348 + (x * 24)
