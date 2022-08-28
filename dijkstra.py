@@ -36,11 +36,12 @@ def dijkstra(maze, beginning, end):
                     rev_path[child_cell] = curr_cell
         unvisited.pop(curr_cell)
     fwd_path = {}
+    cost = visited[end]
     while end != beginning:
         fwd_path[rev_path[end]] = end
         end = rev_path[end]
     fwd_path = OrderedDict(reversed(list(fwd_path.items())))
-    return rev_path, fwd_path, visited[end]
+    return rev_path, fwd_path, cost
 
 
 def update_path(maze, path, mapping, visited, solution):
@@ -59,4 +60,3 @@ def update_path(maze, path, mapping, visited, solution):
         y_cord = 348 - (y * 24)
         solution.goto(x_cord, y_cord)
         solution.stamp()
-        time.sleep(0.005)
