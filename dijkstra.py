@@ -2,7 +2,7 @@ from collections import OrderedDict
 import time
 
 
-def dijkstra(maze):
+def dijkstra(maze, beginning, end):
     unvisited = {}
     for y in range(len(maze[0])):
         for x in range(len(maze)):
@@ -15,8 +15,8 @@ def dijkstra(maze):
         x, y = curr_cell[0], curr_cell[1]
         visited[curr_cell] = unvisited[curr_cell]
 
-        # goal reached
-        if curr_cell == (29, 24):
+        # end reached
+        if curr_cell == end:
             break
         for direction in "NESW":
             if maze[x][y] != "x":
@@ -36,12 +36,11 @@ def dijkstra(maze):
                     rev_path[child_cell] = curr_cell
         unvisited.pop(curr_cell)
     fwd_path = {}
-    goal = (29, 24)
-    while goal != (1, 1):
-        fwd_path[rev_path[goal]] = goal
-        goal = rev_path[goal]
+    while end != beginning:
+        fwd_path[rev_path[end]] = end
+        end = rev_path[end]
     fwd_path = OrderedDict(reversed(list(fwd_path.items())))
-    return rev_path, fwd_path, visited[(29, 24)]
+    return rev_path, fwd_path, visited[end]
 
 
 def update_path(maze, path, mapping, visited, solution):
@@ -60,4 +59,4 @@ def update_path(maze, path, mapping, visited, solution):
         y_cord = 348 - (y * 24)
         solution.goto(x_cord, y_cord)
         solution.stamp()
-        time.sleep(0.1)
+        time.sleep(0.005)
