@@ -142,7 +142,7 @@ def run_dijkstra(maze, beginning, end, turt):
     visited = Visited()
     solution = Path()
     rev, path, cost = dijkstra(maze, beginning, end)
-    update_path(maze, path, rev, visited, solution)
+    update_path(maze, path, rev, visited, solution, end)
     write_cost(cost, turt)
     build_maze(maze)
 
